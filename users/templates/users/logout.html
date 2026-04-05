@@ -1,0 +1,18 @@
+{% extends 'Book/base.html' %} {% block body %}
+<div class="row justify-content-center py-5">
+  <div class="col-md-6 text-center">
+    <div class="py-5">
+      <div class="display-1 text-muted mb-4">
+        <i class="bi bi-door-open"></i>
+      </div>
+      <h1 class="fw-bold">Logged Out</h1>
+      <p class="lead text-muted mb-4">You have successfully logged out.</p>
+      <div class="d-flex justify-content-center gap-3">
+        <a href="{% url 'login' %}" class="btn btn-primary px-4"
+          >Log In Again</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'Book/base.html' %} {% block body %}
+<div class="row justify-content-center py-5">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-lg border-0">
+      <div class="card-header bg-dark text-white p-4">
+        <h2 class="h4 mb-0 fw-bold">Add a New Book</h2>
+      </div>
+      <div class="card-body p-4 p-md-5">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="mb-4">
+            <h5
+              class="fw-bold text-primary mb-3 text-uppercase small tracking-wider"
+            >
+              Book Information
+            </h5>
+            <div class="django-form-styled">{{ book_form.as_p }}</div>
+          </div>
+
+          <hr class="my-4" />
+
+          <div class="d-grid mb-3">
+            <button
+              class="btn btn-outline-secondary btn-sm"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#reviewSection"
+              aria-expanded="false"
+              aria-controls="reviewSection"
+            >
+              + Add a Review & Rating (Optional)
+            </button>
+            <p class="text-muted small italic mb-0">
+              Note: Uploading without review will default book to "0.0" rating!
+            </p>
+          </div>
+
+          <div class="collapse" id="reviewSection">
+            <div class="card card-body bg-light border-0 mb-4">
+              <h5 class="fw-bold mb-3 small text-uppercase">Your Review</h5>
+              <div class="django-form-styled">{{ review_form.as_p }}</div>
+            </div>
+          </div>
+
+          <div class="d-grid pt-2">
+            <button
+              type="submit"
+              class="btn btn-primary py-3 fw-bold shadow-sm"
+            >
+              Save Book
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

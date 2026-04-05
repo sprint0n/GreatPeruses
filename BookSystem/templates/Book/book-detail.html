@@ -1,0 +1,79 @@
+{% extends 'Book/base.html' %} {% block body %}
+<!-- prettier-ignore -->
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="card shadow border-0 mb-4 sticky-top" style="top: 20px">
+      <img
+        src="{{ book.cover.url }}"
+        class="card-img-top"
+        alt="{{ book.title }}"
+      />
+      <div class="card-body">
+        <h2 class="fw-bold">{{ book.title }}</h2>
+        <span class="badge bg-secondary mb-3">{{ book.category }}</span>
+        <div class="h4 text-warning mb-3">
+          ★ {{ book.globalRating|floatformat:2 }}
+        </div>
+        <p class="text-muted">{{ book.summary }}</p>
+       <div class="mb-4 pt-3 border-top">
+            <form method="POST" action="{% url 'BookSystem:update_status' book.id %}" class="row g-2 align-items-center">
+                {% csrf_token %}
+                <div class="col-8">
+                    <select name="status" class="form-select form-select-sm border-0 bg-light fw-bold">
+                        <option value="tr" {% if user_review.readingStatus == 'tr' %}selected{% endif %}>Want To Read</option>
+                        <option value="ip" {% if user_review.readingStatus == 'ip' %}selected{% endif %}>Reading</option>
+                        <option value="r" {% if user_review.readingStatus == 'r' %}selected{% endif %}>Read</option>
+                        <option value="u" {% if user_review.readingStatus == 'u' %}selected{% endif %}>Unread</option>
+                    </select>
+                </div>
+                <div class="col-4">
+                    <button type="submit" class="btn btn-dark btn-sm w-100 shadow-sm">Update</button>
+                </div>
+            </form>
+        </div>
+        <a
+          href="{% url 'BookSystem:review_book' book.id %}"
+          class="btn btn-primary w-100"
+          >Add/Edit Your Review</a
+        >
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+  <h3 class="mb-4">Reader Reviews</h3>
+  {% for r in reviews %}
+  <div class="card mb-3 border-0 shadow-sm">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="mb-0 fw-bold">@{{ r.user.user.username }}</h5>
+        <span class="badge rounded-pill bg-light text-dark border">
+          Status: {{ r.get_readingStatus_display }}
+        </span>
+      </div>
+
+      {# Only show the stars if a rating exists #}
+      {% if r.rating %}
+      <div class="text-warning mb-2">
+        {{r.rating}}
+        {% for i in "12345" %} 
+          {% if forloop.counter <= r.rating %}★{% else %}☆{% endif %} 
+        {% endfor %}
+        
+      </div>
+      {% endif %}
+
+      {# Only show the review text if it isn't empty #}
+      {% if r.review %}
+      <p class="card-text">{{ r.review }}</p>
+      {% elif not r.rating %}
+      <p class="text-muted small mb-0"><em>User added this book to their library.</em></p>
+      {% endif %}
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-muted italic">No reviews yet. Be the first!</p>
+  {% endfor %}
+</div>
+{% endblock %}

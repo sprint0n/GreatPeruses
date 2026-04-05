@@ -1,0 +1,96 @@
+{% extends 'Book/base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="row mb-5 justify-content-center">
+  <div class="col-md-10">
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-4">
+        <form action="" method="GET" class="row g-3 align-items-center">
+          <div class="col-md-4">
+            <input type="search" name="book_title" class="form-control" placeholder="Search titles..." value="{{ request.GET.book_title }}">
+          </div>
+
+          <div class="col-md-2">
+            <select name="category_select" class="form-select">
+              <option value="">All Categories</option>
+              {% for cat in categories %}
+              <option value="{{ cat }}" {% if request.GET.category_select == cat %}selected{% endif %}>
+                {{ cat|title }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+         {% if is_library %}
+          <div class="col-md-2">
+            <select name="status_select" class="form-select">
+              <option value="">Status</option>
+              <option value="tr" {% if request.GET.status_select == "tr" %}selected{% endif %}>Want to Read</option>
+              <option value="ip" {% if request.GET.status_select == "ip" %}selected{% endif %}>Reading</option>
+              <option value="r" {% if request.GET.status_select == "r" %}selected{% endif %}>Read</option>
+            </select>
+          </div>
+        {% endif %}
+
+          <div class="col-md-2">
+            <select name="rating_select" class="form-select">
+              <option value="">Min. Rating</option>
+              {% for i in "54321" %}
+              <option value="{{ i }}" {% if request.GET.rating_select == i %}selected{% endif %}>{{ i }}+ Stars</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100 shadow-sm">Filter</button>
+            <a href="." class="btn btn-outline-danger">Reset</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+  {% for book_item in book_object %}
+  <div class="col">
+    <div class="card h-100 shadow-sm border-0">
+      <img src="{{ book_item.cover.url }}" class="card-img-top" alt="{{ book_item.title }}" style="height: 300px; object-fit: cover">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="badge bg-info text-dark">{{ book_item.category }}</span>
+          <span class="text-warning fw-bold">★ {{ book_item.globalRating|floatformat:1 }}</span>
+        </div>
+        <h5 class="card-title fw-bold text-truncate">{{ book_item.title }}</h5>
+        <p class="card-text text-muted small" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+          {{ book_item.description }}
+        </p>
+      </div>
+      <div class="card-footer bg-transparent border-0 pb-3">
+        <div class="d-grid gap-2">
+          <a href="{% url 'BookSystem:book_detail' book_item.id %}" class="btn btn-outline-dark btn-sm">More Info</a>
+          <a href="{% url 'BookSystem:review_book' book_item.id %}" class="btn btn-primary btn-sm">Rate & Review</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<nav class="mt-5">
+  <ul class="pagination justify-content-center">
+    {% if book_object.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ book_object.previous_page_number }}">Prev</a></li>
+    {% endif %}
+    <li class="page-item disabled">
+      <span class="page-link text-dark fw-bold">Page {{ book_object.number }} of {{ book_object.paginator.num_pages }}</span>
+    </li>
+    {% if book_object.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ book_object.next_page_number }}">Next</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ book_object.paginator.num_pages }}">Last</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}

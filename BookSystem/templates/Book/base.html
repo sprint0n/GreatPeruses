@@ -1,0 +1,77 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GreatPeruses</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'Book/BaseStyle.css' %}" />
+  </head>
+  <body class="bg-light">
+   <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+  <div class="container">
+    <a href="{% url 'BookSystem:books' %}" class="navbar-brand fw-bold text-uppercase">
+      GreatPeruses
+    </a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="navbar-nav ms-auto align-items-center">
+        {% if user.is_authenticated %}
+          <span class="nav-item nav-link text-light me-3">
+            <strong>{{ user.username }}</strong>
+          </span>
+
+          <a href="{% url 'BookSystem:books' %}" class="nav-link">All Books</a>
+          <a href="{% url 'BookSystem:add_book' %}" class="nav-link">Add Book</a>
+          <a href="{% url 'BookSystem:book_library' %}" class="nav-link">My Library</a>
+          
+          <form action="{% url 'logout' %}" method="post" class="ms-lg-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-light btn-sm">
+              Logout
+            </button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}" class="nav-link">Login</a>
+          <a href="{% url 'register' %}" class="btn btn-primary btn-sm text-white ms-lg-2">
+            Register
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+    <div class="container mt-4">
+      {% if messages %} {% for message in messages %}
+      <div
+        class="alert alert-{{ message.tags }} alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+      {% endfor %} {% endif %}
+      <main>{% block body %}{% endblock %}</main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
